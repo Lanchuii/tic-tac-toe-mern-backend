@@ -1,21 +1,43 @@
 const express = require('express');
+const Game = require('../models/GameModel')
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.json({ msg: 'GET all games' });
+router.get('/', async (req, res) => {
+  try {
+    const games = await Game.find({})
+    res.status(200).json(games);
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
 });
 
-router.get('/:id', (req, res) => {
-  res.json({ msg: 'GET a single game' });
+
+router.post('/', async (req, res) => {
+  const { player1, player2, score1, score2, winner } = req.body;
+  try {
+    const game = await Game.create({ player1, player2, score1, score2, winner });
+    res.status(200).json(game)
+  } catch (error) {
+    res.status(400).json({ error: error.message })
+  }
 });
 
-router.post('/', (req, res) => {
-  res.json({ msg: 'POST a game' });
-});
+router.delete('/:id', async (req, res) => {
+  const id = req.params.id;
 
-router.delete('/', (req, res) => {
-  res.json({ msg: 'DELETE a single game' });
+  try {
+    const deletedGame = await Game.findByIdAndDelete(id);
+
+    if (!deletedGame) {
+      return res.status(404).json({ error: 'ID not found' });
+    }
+
+    res.status(201).send('Game deleted successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({});
+  }
 });
 
 module.exports = router;
