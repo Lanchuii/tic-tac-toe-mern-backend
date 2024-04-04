@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
   try {
-    const games = await Game.find({})
+    const games = await Game.find({}).sort({ createdAt: -1 })
     res.status(200).json(games);
   } catch (error) {
     res.status(400).json({ error: error.message })

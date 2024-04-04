@@ -9,7 +9,7 @@ const gameDataSchema = new Schema(
     score1: { type: Number, required: true },
     score2: { type: Number, required: true },
     winner: { type: String, required: true },
-  }
+  }, { timestamps: true }
 )
 
 module.exports = mongoose.model('Game_Data', gameDataSchema)
